@@ -44,6 +44,43 @@ const TimeEdit = class {
     });
   }
 
+
+  //courseId should prob. actually be called roomId
+  //but this thing generally needs a bunch of refactoring
+  getRoom(courseId) {
+    return new Promise((resolve, reject) => {
+      const lectureURL = this.getCourseUrl(courseId);
+
+      request(lectureURL, (error, response, json) => {
+        if (!error && response.statusCode === 200) {
+          const rawCourse = JSON.parse(json);
+
+          //console.log(rawCourse);
+
+          /*var jsonPretty = JSON.stringify(JSON.parse(json),null,2);
+          console.log(jsonPretty);*/
+
+          //console.log('Processed: ');
+
+          const course = rawCourse.reservations.map(lecture => {
+            return {
+              startDate: lecture.startdate,
+              endDate: lecture.enddate,
+              startTime: lecture.starttime,
+              endTime: lecture.endtime,
+              room: lecture.columns[5],
+              comment: lecture.columns[7]
+            };
+          });
+
+          return resolve(course);
+        }
+
+        return reject(error);
+      });
+    });
+  }
+
   /**
    * Get lecture ID from course code
    * @param {String} courseCode - Name of course. Ex. DAT100
@@ -160,3 +197,5 @@ const TimeEdit = class {
 };
 
 module.exports = TimeEdit;
+
+/* vim: set expandtab:tabstop=2:softtabstop=2:shiftwidth=2 */
