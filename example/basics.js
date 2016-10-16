@@ -13,6 +13,7 @@ aio.getCourseId('dat100', 5)
   console.log(course);
 });
 
+console.log('======Separator======');
 
 const ntnu = new TimeEdit('https://no.timeedit.net/web/hist/db1/hist/');
 

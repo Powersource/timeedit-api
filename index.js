@@ -48,6 +48,19 @@ const TimeEdit = class {
   //courseId should prob. actually be called roomId
   //but this thing generally needs a bunch of refactoring
   getRoom(courseId) {
+    return this.requestInfo(courseId, lecture => {
+      return {
+        startDate: lecture.startdate,
+        endDate: lecture.enddate,
+        startTime: lecture.starttime,
+        endTime: lecture.endtime,
+        room: lecture.columns[5],
+        comment: lecture.columns[7]
+      };
+    });
+  }
+
+  requestInfo(courseId, mapping) {
     return new Promise((resolve, reject) => {
       const lectureURL = this.getCourseUrl(courseId);
 
@@ -62,16 +75,7 @@ const TimeEdit = class {
 
           //console.log('Processed: ');
 
-          const course = rawCourse.reservations.map(lecture => {
-            return {
-              startDate: lecture.startdate,
-              endDate: lecture.enddate,
-              startTime: lecture.starttime,
-              endTime: lecture.endtime,
-              room: lecture.columns[5],
-              comment: lecture.columns[7]
-            };
-          });
+          const course = rawCourse.reservations.map(mapping);
 
           return resolve(course);
         }
@@ -198,4 +202,4 @@ const TimeEdit = class {
 
 module.exports = TimeEdit;
 
-/* vim: set expandtab:tabstop=2:softtabstop=2:shiftwidth=2 */
+/* vim: set expandtab tabstop=2 shiftwidth=2: */
