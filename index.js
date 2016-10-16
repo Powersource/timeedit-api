@@ -17,30 +17,16 @@ const TimeEdit = class {
    * @return {Promise} - Promise of lecture object
    */
   getCourse(courseId) {
-    return new Promise((resolve, reject) => {
-      const lectureURL = this.getCourseUrl(courseId);
-
-      request(lectureURL, (error, response, json) => {
-        if (!error && response.statusCode === 200) {
-          const rawCourse = JSON.parse(json);
-
-          const course = rawCourse.reservations.map(lecture => {
-            return {
-              startDate: lecture.startdate,
-              endDate: lecture.enddate,
-              startTime: lecture.starttime,
-              endTime: lecture.endtime,
-              room: lecture.columns[3].split(', '),
-              type: lecture.columns[5],
-              lecturers: lecture.columns[4].split(', ')
-            };
-          });
-
-          return resolve(course);
-        }
-
-        return reject(error);
-      });
+    return this.requestInfo(courseId, lecture => {
+      return {
+        startDate: lecture.startdate,
+        endDate: lecture.enddate,
+        startTime: lecture.starttime,
+        endTime: lecture.endtime,
+        room: lecture.columns[3].split(', '),
+        type: lecture.columns[5],
+        lecturers: lecture.columns[4].split(', ')
+      };
     });
   }
 
