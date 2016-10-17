@@ -6,6 +6,6 @@ const lth = new TimeEdit('https://se.timeedit.net/web/lu/db1/lth1/');
 // then use course id to get the course schedule
 lth.getCourseId('V:N1', 182)
 .catch(e => console.log(e))
-.then(roomId => lth.getRoom(roomId))
+.then(roomId => lth.getLthRoom(roomId))
 .then(room => console.log(room))
 .catch(e => console.log(e));

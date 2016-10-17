@@ -17,7 +17,7 @@ const TimeEdit = class {
    * @return {Promise} - Promise of lecture object
    */
   getCourse(courseId) {
-    return this.requestInfo(courseId, lecture => {
+    return this.requestInfo(courseId, false, lecture => {
       return {
         startDate: lecture.startdate,
         endDate: lecture.enddate,
@@ -32,9 +32,9 @@ const TimeEdit = class {
 
 
   //courseId should prob. actually be called roomId
-  //but this thing generally needs a bunch of refactoring
-  getRoom(courseId) {
-    return this.requestInfo(courseId, lecture => {
+  getLthRoom(courseId) {
+    return this.requestInfo(courseId, true, lecture => {
+      // TODO: This mapping is wrong again
       return {
         startDate: lecture.startdate,
         endDate: lecture.enddate,
@@ -46,9 +46,9 @@ const TimeEdit = class {
     });
   }
 
-  requestInfo(courseId, mapping) {
+  requestInfo(courseId, isLth, mapping) {
     return new Promise((resolve, reject) => {
-      const lectureURL = this.getCourseUrl(courseId);
+      const lectureURL = this.getCourseUrl(courseId, isLth);
 
       request(lectureURL, (error, response, json) => {
         if (!error && response.statusCode === 200) {
@@ -159,10 +159,18 @@ const TimeEdit = class {
    * @param {Number} courseId - Identifier for single course. Ex
    * @return {String} - URL to json of course schedule
    */
-  getCourseUrl(courseId) {
+  getCourseUrl(courseId, isLth) {
+    // I have no clue what this variable represents
+    // but it seems to be needed, soooo...
+    let sid = 3;
+    if(isLth) {
+      sid = 4;
+    }
     return (
       this.baseUrl +
-      'ri.json?h=f&sid=3&p=0.m%2C12.n&objects=' +
+      'ri.json?h=f&sid=' +
+      sid +
+      '&p=0.m%2C12.n&objects=' +
       courseId +
       '&ox=0&types=0&fe=0&h2=f'
     );
